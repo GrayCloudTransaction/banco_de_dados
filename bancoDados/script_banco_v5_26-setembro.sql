@@ -11,11 +11,11 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `empresa` (
   `id_empresa` INT NOT NULL auto_increment,
   `razao_social` VARCHAR(120) NULL,
-  `cnpj` CHAR(14) NULL,
+  `cnpj` CHAR(18) NULL,
   `numero_imovel` INT NULL,
   `cep` CHAR(9) NULL,
   `email` VARCHAR(150) NULL,
-  `telefone` VARCHAR(11) NULL,
+  `telefone` VARCHAR(13) NULL,
   PRIMARY KEY (`id_empresa`)
 );
 
