@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS `ScriptGCT`.`Empresa` (
   `Numero` INT  NOT NULL,
   `CEP` CHAR(8)  NOT NULL,
   `Email` VARCHAR(150) NOT  NULL,
-  `Telefone` CHAR(11)  NOT NULL
+  `Telefone` CHAR(11)  NOT NULL,
+  ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS `ScriptGCT`.`Funcionario` ;
@@ -28,9 +29,9 @@ CREATE TABLE IF NOT EXISTS `ScriptGCT`.`Funcionario` (
    constraint `chkPermissao` check (`Permissao` = '1' or `Permissao` = '2'  or `Permissao` = '3' ),
   `fkGerente` INT,
   `fkEmpresa` INT NOT NULL,
-    FOREIGN KEY (`fkGerente`) REFERENCES `ScriptGCT`.`Funcionario` (`idFuncionario`),
-    FOREIGN KEY (`fkEmpresa`) REFERENCES `ScriptGCT`.`Empresa` (`idEmpresa`)
-   );
+  FOREIGN KEY (`fkGerente`) REFERENCES `ScriptGCT`.`Funcionario` (`idFuncionario`),
+  FOREIGN KEY (`fkEmpresa`) REFERENCES `ScriptGCT`.`Empresa` (`idEmpresa`),
+);
 
 DROP TABLE IF EXISTS `ScriptGCT`.`Maquina` ;
 
@@ -48,14 +49,14 @@ CREATE TABLE IF NOT EXISTS `ScriptGCT`.`UnidadeMedida` (
   `idUnidadeMedida` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   `UnidadeDeMedida` VARCHAR(60) NULL,
   `TipoMedida` VARCHAR(60) NULL
-  );
+);
 
 DROP TABLE IF EXISTS `ScriptGCT`.`Componente` ;
 
 CREATE TABLE IF NOT EXISTS `ScriptGCT`.`Componente` (
   `idComponente` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
   `TipoComponente` VARCHAR(60) NULL
-  );
+);
 
 DROP TABLE IF EXISTS `ScriptGCT`.`SubComponente` ;
 
@@ -75,7 +76,7 @@ CREATE TABLE IF NOT EXISTS `ScriptGCT`.`Registro` (
   `ValorRegistro` DOUBLE NULL,
   `DataRegistro` DATETIME NULL,
   `fkSubComponente` INT NOT NULL,
-    FOREIGN KEY (`fkSubComponente`) REFERENCES `ScriptGCT`.`SubComponente` (`idSubComponentes`)
+  FOREIGN KEY (`fkSubComponente`) REFERENCES `ScriptGCT`.`SubComponente` (`idSubComponentes`)
 );
 
 DROP TABLE IF EXISTS `ScriptGCT`.`MetricaSubComponente` ;
@@ -85,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `ScriptGCT`.`MetricaSubComponente` (
   `MetricaMinima` VARCHAR(50) NULL,
   `MetricaMaxima` VARCHAR(50) NULL,
   `fkSubComponente` INT NOT NULL,
-    FOREIGN KEY (`fkSubComponente`) REFERENCES `ScriptGCT`.`SubComponente` (`idSubComponentes`)
+  FOREIGN KEY (`fkSubComponente`) REFERENCES `ScriptGCT`.`SubComponente` (`idSubComponentes`)
 );
 
 DROP TABLE IF EXISTS `ScriptGCT`.`ModeloComponente` ;
@@ -96,8 +97,8 @@ CREATE TABLE IF NOT EXISTS `ScriptGCT`.`ModeloComponente` (
   `Fabricante` VARCHAR(60) NULL,
   `fkMaquina` INT NOT NULL,
   `fkComponente` INT NOT NULL,
-    FOREIGN KEY (`fkMaquina`) REFERENCES `ScriptGCT`.`Maquina` (`idMaquina`),
-    FOREIGN KEY (`fkComponente`) REFERENCES `ScriptGCT`.`Componente` (`idComponente`)
+  FOREIGN KEY (`fkMaquina`) REFERENCES `ScriptGCT`.`Maquina` (`idMaquina`),
+  FOREIGN KEY (`fkComponente`) REFERENCES `ScriptGCT`.`Componente` (`idComponente`)
 );
 
 select * from Empresa;

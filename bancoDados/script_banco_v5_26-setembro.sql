@@ -11,11 +11,11 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `empresa` (
   `id_empresa` INT NOT NULL auto_increment,
   `razao_social` VARCHAR(120) NULL,
-  `cnpj` CHAR(18) NULL,
+  `cnpj` CHAR(14) NULL,
   `numero_imovel` INT NULL,
   `cep` CHAR(9) NULL,
   `email` VARCHAR(150) NULL,
-  `telefone` VARCHAR(13) NULL,
+  `telefone` VARCHAR(11) NULL,
   PRIMARY KEY (`id_empresa`)
 );
 
@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS `chamados` (
   `fk_componente` INT NOT NULL,
   `fk_empresa` INT NOT NULL,
   PRIMARY KEY (`id_chamados`),
-  FOREIGN KEY (`fk_componente`) REFERENCES `componente` (`id_componente`),
-  FOREIGN KEY (`fk_empresa`) REFERENCES `empresa` (id_empresa)
+  FOREIGN KEY (`fk_componente`) REFERENCES `componente` (`id_componente`) ON DELETE CASCADE,
+  FOREIGN KEY (`fk_empresa`) REFERENCES `empresa` (id_empresa) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `funcionario` (
@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS `funcionario` (
   `permissao` INT NOT NULL,
   `fk_gerente` INT,
   `fk_empresa` INT NOT NULL,
-  FOREIGN KEY (`fk_gerente`) REFERENCES funcionario(`id_funcionario`),
-  FOREIGN KEY (`fk_empresa`) REFERENCES empresa(`id_empresa`)
+  FOREIGN KEY (`fk_gerente`) REFERENCES funcionario(`id_funcionario`) ON DELETE CASCADE,
+  FOREIGN KEY (`fk_empresa`) REFERENCES empresa(`id_empresa`) ON DELETE CASCADE
 );
 
 
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `servidor` (
   `descricao` VARCHAR(200) NULL,
   `fk_empresa` INT NOT NULL,
   PRIMARY KEY (`id_servidor`),
-  FOREIGN KEY (`fk_empresa`)REFERENCES `empresa` (`id_empresa`)
+  FOREIGN KEY (`fk_empresa`) REFERENCES `empresa` (`id_empresa`) ON DELETE CASCADE
 );
 
 
@@ -65,8 +65,7 @@ CREATE TABLE IF NOT EXISTS `unidade_medida` (
   `tipo_medida` VARCHAR(60) NULL,
   `fk_componente` INT NOT NULL,
   PRIMARY KEY (`id_unidade_medida`),
-    FOREIGN KEY (`fk_componente`)
-    REFERENCES `componente` (`id_componente`)
+  FOREIGN KEY (`fk_componente`) REFERENCES `componente` (`id_componente`) ON DELETE CASCADE
 );
 
 
@@ -77,11 +76,9 @@ CREATE TABLE IF NOT EXISTS `modelo_componente` (
   `fk_servidor` INT NOT NULL,
   `fk_componente` INT NOT NULL,
   `metrica_maxima` VARCHAR(45) NULL,
-  PRIMARY KEY (`id_modelo_componente`),
-    FOREIGN KEY (`fk_servidor`)
-    REFERENCES `servidor` (`id_servidor`),
-    FOREIGN KEY (`fk_componente`)
-    REFERENCES `componente` (`id_componente`)
+  PRIMARY KEY (`id_modelo_componente`), 
+  FOREIGN KEY (`fk_servidor`) REFERENCES `servidor` (`id_servidor`) ON DELETE CASCADE,
+  FOREIGN KEY (`fk_componente`) REFERENCES `componente` (`id_componente`) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `registro` (
@@ -90,6 +87,37 @@ CREATE TABLE IF NOT EXISTS `registro` (
   `data_registro` DATETIME NULL,
   `fk_modelo_componente` INT NOT NULL,
   PRIMARY KEY (`id_registro`),
-    FOREIGN KEY (`fk_modelo_componente`)
-    REFERENCES `modelo_componente` (`id_modelo_componente`)
+  FOREIGN KEY (`fk_modelo_componente`) REFERENCES `modelo_componente` (`id_modelo_componente`) ON DELETE CASCADE
 );
+
+-- Cadastro de Empresas
+INSERT INTO `Empresa` (`razao_social`, `cnpj`, `numero_imovel`, `cep`, `email`, `telefone`) 
+VALUES  ('Pague Seguro',"61.186.888/0093-01", 763, '09260-640', 'pagueSeguro@gmail.com', '123123123')
+	, ('SPTECH', "61.186.888/0093-01", 298,'09260-640', 'sptech@gmail.com', '456456456')
+	, ('Amazon', "61.186.888/0093-01", 234,'09260-640', 'amazon@gmail.com', '889877677');
+Select * from `Empresa`;
+
+
+-- Cadastro de Gerentes
+INSERT INTO `Funcionario` (`nome`, `email`, `senha`, `cargo`, `cpf`, `permissao`, `fk_gerente`, `fk_empresa`)
+VALUES ('Gabriel', 'gabriel@gmail.com', '12345', 'Gerente', '690.969.360-43', '1', null, 1)
+	, ('Fernando Brandão', 'fernado@gmail.com', '12345', 'Presidente', '226.146.010-47', '1', null, 2)
+    , ('Cláudio', 'claudio@gmail.com', '12345', 'Gerente', '810.791.190-35', '1', null, 3);
+
+
+-- Cadastro de Funcionários
+INSERT INTO `Funcionario` (`nome`, `email`, `senha`, `cargo`, `cpf`, `permissao`, `fk_gerente`, `fk_empresa`)
+values ('Cleiton Rodrigues', 'cleiton@gmail.com', '12345', 'Analísta Junior', "514.184.580-07", '2', 1, 1)
+	, ('Carlos Souza', 'carlos@gmail.com', '12345', 'Analísta Sênior', "541.886.660-56", '1', 2, 2)
+    , ('Pedro Henrique', 'pedro@gmail.com', '12345', 'Analísta Sênior', "091.045.750-67", '1', 3, 3);
+
+SELECT * FROM `Funcionario`;
+
+
+-- Cadastro de Servidores 
+INSERT INTO `servidor` (`nome`, `codigo`, `tipo`, `descricao`, `fk_empresa`)
+VALUES ('SERVER-AHRL1NB', 'XPTO-0987', 'Servidor Principal', 'Servidor responsável por executar X tarefa', 1)
+	, ('SERVER-9HJD2AL', 'XP-9384', 'Servidor de Backup', 'Servidor responsável por backups', 1)
+    , ('SERVER-UHD71P6', 'LOC-0284', 'Servidor de Homologação', 'Servidor responsável por Homologações ', 1);
+    
+DELETE FROM funcionario WHERE id_funcionario = 1;
