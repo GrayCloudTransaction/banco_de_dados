@@ -23,3 +23,21 @@ FROM `registro`
 
 SELECT * FROM `vw_registro_geral` WHERE `fk_servidor` = 1;
 
+
+SET @componentes = (SELECT GROUP_CONCAT( (
+	CONCAT(
+		"MAX(CASE WHEN `fk_componente` = ", componente.id_componente, " THEN ROUND(valor_registro, 2) END) AS '", componente.tipo_componente, "'"
+	)
+) SEPARATOR ", ") FROM componente);
+
+SET @comando_sql = CONCAT('
+    CREATE VIEW dados_por_componente AS
+    SELECT 
+        id_registro, 
+        data_registro, 
+        ', @componentes, ' 
+    FROM registro GROUP BY id_registro, data_registro;');
+    
+PREPARE stmt FROM @comando_sql;
+
+EXECUTE stmt;
