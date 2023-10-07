@@ -11,11 +11,11 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `empresa` (
   `id_empresa` INT NOT NULL auto_increment,
   `razao_social` VARCHAR(120) NULL,
-  `cnpj` CHAR(14) NULL,
+  `cnpj` CHAR(18) NULL,
   `numero_imovel` INT NULL,
   `cep` CHAR(9) NULL,
   `email` VARCHAR(150) NULL,
-  `telefone` VARCHAR(11) NULL,
+  `telefone` VARCHAR(13) NULL,
   PRIMARY KEY (`id_empresa`)
 );
 
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `registro` (
 
 -- Cadastro de Empresas
 INSERT INTO `Empresa` (`razao_social`, `cnpj`, `numero_imovel`, `cep`, `email`, `telefone`) 
-VALUES  ('Pague Seguro',"61.186.888/0093-01", 763, '09260-640', 'pagueSeguro@gmail.com', '123123123')
+VALUES ('Pague Seguro',"61.186.888/0093-01", 763, '09260-640', 'pagueSeguro@gmail.com', '123123123')
 	, ('SPTECH', "61.186.888/0093-01", 298,'09260-640', 'sptech@gmail.com', '456456456')
 	, ('Amazon', "61.186.888/0093-01", 234,'09260-640', 'amazon@gmail.com', '889877677');
 Select * from `Empresa`;
@@ -113,11 +113,8 @@ values ('Cleiton Rodrigues', 'cleiton@gmail.com', '12345', 'Analísta Junior', "
 
 SELECT * FROM `Funcionario`;
 
-
 -- Cadastro de Servidores 
 INSERT INTO `servidor` (`nome`, `codigo`, `tipo`, `descricao`, `fk_empresa`)
 VALUES ('SERVER-AHRL1NB', 'XPTO-0987', 'Servidor Principal', 'Servidor responsável por executar X tarefa', 1)
 	, ('SERVER-9HJD2AL', 'XP-9384', 'Servidor de Backup', 'Servidor responsável por backups', 1)
     , ('SERVER-UHD71P6', 'LOC-0284', 'Servidor de Homologação', 'Servidor responsável por Homologações ', 1);
-    
-DELETE FROM funcionario WHERE id_funcionario = 1;
