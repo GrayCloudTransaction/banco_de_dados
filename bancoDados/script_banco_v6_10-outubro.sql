@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `empresa` (
   `cep` CHAR(9) NULL,
   `email` VARCHAR(150) NULL,
   `telefone` VARCHAR(13) NULL,
+  `complemento` VARCHAR(450) NULL,
   PRIMARY KEY (`id_empresa`)
 );
 
@@ -87,6 +88,14 @@ CREATE TABLE IF NOT EXISTS `registro` (
   `fk_componente` INT NOT NULL,
   PRIMARY KEY (`id_registro`),
   FOREIGN KEY (`fk_componente`) REFERENCES `componente` (`id_componente`) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `anomalia`(
+  `id_anomalia` INT NOT NULL auto_increment,
+  `solucao` VARCHAR(450),
+  `fk_chamados` INT NOT NULL,
+  primary key (`id_anomalia`),
+  foreign key (`fk_chamados`) REFERENCES `chamados`(`id_chamados`)
 );
 
 -- Cadastro de Empresas
