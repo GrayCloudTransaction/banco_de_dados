@@ -45,8 +45,7 @@ CREATE TABLE IF NOT EXISTS `servidor` (
 
 CREATE TABLE IF NOT EXISTS `unidade_medida` (
   `id_unidade_medida` INT NOT NULL auto_increment,
-  `unidade_medida` VARCHAR(60) NULL,
-  `tipo_medida` VARCHAR(60) NULL,
+  `sigla` CHAR(5) NULL,
   PRIMARY KEY (`id_unidade_medida`)
 );
 
