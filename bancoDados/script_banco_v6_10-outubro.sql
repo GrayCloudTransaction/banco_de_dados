@@ -86,8 +86,10 @@ CREATE TABLE IF NOT EXISTS `registro` (
   `valor_registro` DOUBLE NULL,
   `data_registro` DATETIME NULL,
   `fk_componente` INT NOT NULL,
+  `fk_medida` INT NOT NULL,
   PRIMARY KEY (`id_registro`),
-  FOREIGN KEY (`fk_componente`) REFERENCES `componente` (`id_componente`) ON DELETE CASCADE
+  FOREIGN KEY (`fk_componente`) REFERENCES `componente` (`id_componente`) ON DELETE CASCADE,
+  FOREIGN KEY (`fk_medida`) REFERENCES `unidade_medida` (`id_unidade_medida`) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `anomalia`(
