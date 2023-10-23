@@ -203,6 +203,24 @@ SELECT * FROM `vw_registro_geral`
 CREATE OR REPLACE VIEW `vw_registro_componente` AS
 SELECT registro.*, tipo_componente
         FROM registro, componente
+
+
+drop function if exists p1;
+drop view if exists h_parm;
+create function p1() returns INTEGER DETERMINISTIC NO SQL return @p1;
+
+create view h_parm as
+SELECT registro.*, tipo_componente
+        FROM registro, componente
+        WHERE tipo_componente IN ("CPU", "RAM", "Disco")
+        AND id_componente = fk_componente
+        AND fk_servidor = p1()
+        ORDER BY data_registro DESC
+        LIMIT 3;
+
+select s.* from (select @p1:=1 p) parm , h_parm s;
+
+select * from registro;
         WHERE tipo_componente IN ("CPU", "RAM", "Disco")
         AND id_componente = fk_componente
         AND fk_servidor = 1
