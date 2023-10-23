@@ -1,4 +1,4 @@
-DROP DATABASE ScriptGCT;
+DROP DATABASE IF EXISTS ScriptGCT;
 CREATE DATABASE IF NOT EXISTS `ScriptGCT` DEFAULT CHARACTER SET utf8 ;
 USE `ScriptGCT`;
 
@@ -96,8 +96,9 @@ CREATE TABLE IF NOT EXISTS `anomalia`(
   `solucao` VARCHAR(450),
   `fk_chamados` INT NOT NULL,
   primary key (`id_anomalia`),
-  foreign key (`fk_chamados`) REFERENCES `chamados`(`id_chamados`)
+  foreign key (`fk_chamados`) REFERENCES `chamados`(`id_chamados`) ON DELETE CASCADE
 );
+
 
 -- Cadastro de Empresas
 INSERT INTO `empresa` (`razao_social`, `cnpj`, `numero_imovel`, `cep`, `email`, `telefone`) 
@@ -123,12 +124,12 @@ values ('Cleiton Rodrigues', 'cleiton@gmail.com', '12345', 'Analísta Junior', "
 SELECT * FROM `funcionario`;
 
 -- Cadastro de Servidores 
-INSERT INTO `servidor` (`nome`, `codigo`, `tipo`, `descricao`, `fk_empresa`)
-VALUES ('SERVER-AHRL1NB', 'XPTO-0987', 'Servidor Principal', 'Servidor responsável por executar X tarefa', 1)
-	, ('SERVER-9HJD2AL', 'XP-9384', 'Servidor de Backup', 'Servidor responsável por backups', 1)
-    , ('SERVER-UHD71P6', 'LOC-0284', 'Servidor de Homologação', 'Servidor responsável por Homologações ', 1);
+INSERT INTO `servidor` (`nome`, `codigo`, `tipo`,`status`, `descricao`, `fk_empresa`)
+VALUES ('SERVER-AHRL1NB', 'XPTO-0987', 'Servidor Principal',1, 'Servidor responsável por executar X tarefa', 1)
+	, ('SERVER-9HJD2AL', 'XP-9384', 'Servidor de Backup',1, 'Servidor responsável por backups', 1)
+    , ('SERVER-UHD71P6', 'LOC-0284', 'Servidor de Homologação',1, 'Servidor responsável por Homologações ', 1);
 
-
+UPDATE servidor set `status` = 0 WHERE id_servidor in(2);
 
 -- Cadastro de Modelo de Componentes
 INSERT INTO `modelo_componente` (`modelo`, `fabricante`)
@@ -148,32 +149,61 @@ VALUES
 INSERT INTO `componente` (`tipo_componente`, `fk_modelo_componente`, `fk_servidor`) VALUES 
 ('CPU', 1, 1),
 ('RAM', 5, 1),
-('Disco', 8, 1);
+('Disco', 8, 1),
+('CPU', 1, 2),
+('RAM',5, 2),
+('Disco', 8, 2);
 
--- Cadastro de Registros (para modelo de componentes)
--- CPU
-INSERT INTO `registro` (`valor_registro`, `data_registro`, `fk_componente`) VALUES
-(8, "2023-10-09 14:05:32", 1), -- qtdCores
-(16, "2023-10-09 14:05:32", 1), -- qtdThreads
-(10, "2023-10-09 14:05:32", 1), -- temposCpu.user
-(20, "2023-10-09 14:05:32", 1), -- temposCpu.system
-(70, "2023-10-09 14:05:32", 1), -- temposCpu.idle
-(70, "2023-10-09 14:05:32", 1), -- UtilizacaoCore
-(70, "2023-10-09 14:05:32", 1), -- porcentagemUtilizacaoCPU
-(3.5, "2023-10-09 14:05:32", 1), -- frequenciaCpu.current
-(2.5, "2023-10-09 14:05:32", 1); -- freqCpuMin
+INSERT INTO `unidade_medida` (`sigla`) VALUES
+('%'),
+('GB'),
+('GHz'),
+('s'),
+('UN');
 
--- Disco
-INSERT INTO `registro` (`valor_registro`, `data_registro`, `fk_componente`) VALUES
-(1000, "2023-10-09 14:05:32", 1), -- Quantidade total de massa
-(750, "2023-10-09 14:05:32", 1), -- Quantidade livre de massa
-(250, "2023-10-09 14:05:32", 1), -- Quantidade de massa em uso
-(25, "2023-10-09 14:05:32", 1); -- Porcentagem em uso
+-- Chamados
+INSERT INTO `chamados` (`titulo`, `descricao`, `data_hora`, `status`, `fk_componente`, `fk_empresa`) VALUES
+("Alerta uso da CPU", "Uso da CPU está em 90%", "2023-09-09 14:00:00", "Aberto", 1, 1),
+("Alerta uso da RAM", "Uso da RAM está em 80%", "2023-09-09 14:00:00", "Aberto", 2, 1),
+("Alerta uso da CPU", "Uso da CPU está em 90%", "2023-09-09 14:00:00", "Aberto", 4, 1),
+("Alerta uso da RAM", "Uso da RAM está em 80%", "2023-09-09 14:00:00", "Aberto", 5, 1),
+("Alerta uso da CPU", "Uso da CPU está em 90%", "2023-10-09 14:05:32", "Aberto", 1, 1),
+("Alerta uso da RAM", "Uso da RAM está em 80%", "2023-10-09 14:05:32", "Aberto", 2, 1),
+("Alerta uso da Disco", "Uso da Disco está em 75%", "2023-10-09 14:05:32", "Aberto", 3, 1),
+("Alerta uso da CPU", "Uso da CPU está em 90%", "2023-10-09 14:05:32", "Aberto", 4, 1),
+("Alerta uso da RAM", "Uso da RAM está em 80%", "2023-10-09 14:05:32", "Aberto", 5, 1);
 
--- RAM
-INSERT INTO `registro` (`valor_registro`, `data_registro`, `fk_componente`) VALUES
-(16, "2023/10/09 14:05:32", 1), -- ramByteToGigabyteTotal
-(12, "2023/10/09 14:05:32", 1), -- ramByteToGigabyteDisponivel
-(4, "2023/10/09 14:05:32", 1), -- ramByteToGigabyteUsando
-(12, "2023/10/09 14:05:32", 1), -- ramByteToGigabyteLivre
-(25, "2023/10/09 14:05:32", 1); -- ramPercentualUtilizado
+
+CREATE OR REPLACE VIEW `vw_registro_geral` AS 
+SELECT 
+    `registro`.`data_registro`,
+    `registro`.`valor_registro`,
+    `unidade_medida`.`sigla`,
+    `componente`.`tipo_componente`,
+    `componente`.`fk_servidor`
+    
+FROM `registro`
+    INNER JOIN `unidade_medida` ON 
+        `registro`.`fk_medida` = `unidade_medida`.`id_unidade_medida`
+    INNER JOIN `componente` ON
+        `registro`.`fk_componente` = `componente`.`id_componente`;
+
+CREATE OR REPLACE VIEW `vw_registro_RAM` AS 
+SELECT * FROM `vw_registro_geral` 
+  WHERE `tipo_componente` LIKE 'RAM';
+
+CREATE OR REPLACE VIEW `vw_registro_CPU` AS 
+SELECT * FROM `vw_registro_geral` 
+  WHERE `tipo_componente` LIKE 'CPU';
+
+CREATE OR REPLACE VIEW `vw_registro_Disco` AS 
+SELECT * FROM `vw_registro_geral` 
+  WHERE `tipo_componente` LIKE 'Disco';
+
+SELECT registro.*, tipo_componente
+        FROM registro, componente
+        WHERE tipo_componente IN ("CPU", "RAM", "Disco")
+        AND id_componente = fk_componente
+        AND fk_servidor = 1
+        ORDER BY data_registro DESC
+        LIMIT 3;
