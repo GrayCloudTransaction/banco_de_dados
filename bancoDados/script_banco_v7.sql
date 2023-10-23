@@ -200,6 +200,7 @@ CREATE OR REPLACE VIEW `vw_registro_Disco` AS
 SELECT * FROM `vw_registro_geral` 
   WHERE `tipo_componente` LIKE 'Disco';
 
+CREATE OR REPLACE VIEW `vw_registro_componente` AS
 SELECT registro.*, tipo_componente
         FROM registro, componente
         WHERE tipo_componente IN ("CPU", "RAM", "Disco")
