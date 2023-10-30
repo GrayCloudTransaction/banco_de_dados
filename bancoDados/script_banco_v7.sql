@@ -38,6 +38,8 @@ CREATE TABLE IF NOT EXISTS `servidor` (
   `descricao` VARCHAR(200) NULL,
   `status` TINYINT NULL,
   `fk_empresa` INT NOT NULL,
+  `prioridade` INT NULL,
+  `localizacao` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`id_servidor`),
   FOREIGN KEY (`fk_empresa`) REFERENCES `empresa` (`id_empresa`) ON DELETE CASCADE
 );
@@ -202,7 +204,7 @@ SELECT * FROM `vw_registro_geral`
 
 CREATE OR REPLACE VIEW `vw_registro_componente` AS
 SELECT registro.*, tipo_componente
-        FROM registro, componente
+        FROM registro, componente;
 
 
 drop function if exists p1;
@@ -220,9 +222,10 @@ SELECT registro.*, tipo_componente
 
 select s.* from (select @p1:=1 p) parm , h_parm s;
 
-select * from registro;
+select * from registro
         WHERE tipo_componente IN ("CPU", "RAM", "Disco")
         AND id_componente = fk_componente
         AND fk_servidor = 1
         ORDER BY data_registro DESC
         LIMIT 3;
+
