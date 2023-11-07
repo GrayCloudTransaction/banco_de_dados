@@ -126,10 +126,10 @@ values ('Cleiton Rodrigues', 'cleiton@gmail.com', '12345', 'Analísta Junior', "
 SELECT * FROM `funcionario`;
 
 -- Cadastro de Servidores 
-INSERT INTO `servidor` (`nome`, `codigo`, `tipo`,`status`, `descricao`, `fk_empresa`)
-VALUES ('SERVER-AHRL1NB', 'XPTO-0987', 'Servidor Principal',1, 'Servidor responsável por executar X tarefa', 1)
-	, ('SERVER-9HJD2AL', 'XP-9384', 'Servidor de Backup',1, 'Servidor responsável por backups', 1)
-    , ('SERVER-UHD71P6', 'LOC-0284', 'Servidor de Homologação',1, 'Servidor responsável por Homologações ', 1);
+INSERT INTO `servidor` (`nome`, `codigo`, `tipo`,`status`, `descricao`, `fk_empresa`, `localizacao`)
+VALUES ('SERVER-AHRL1NB', 'XPTO-0987', 'Servidor Principal',1, 'Servidor responsável por executar X tarefa', 1, 'Sede empresa 012 - Port 3')
+	, ('SERVER-9HJD2AL', 'XP-9384', 'Servidor de Backup',1, 'Servidor responsável por backups', 1, 'Sede empresa 234 - Comp A')
+    , ('SERVER-UHD71P6', 'LOC-0284', 'Servidor de Homologação',1, 'Servidor responsável por Homologações ', 1, 'Sede empresa 102 - Port 1');
 
 UPDATE servidor set `status` = 0 WHERE id_servidor in(2);
 
