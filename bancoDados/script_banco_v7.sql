@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS `chamados` (
   `descricao` VARCHAR(200) NULL,
   `data_hora` DATETIME NULL,
   `status` VARCHAR(30) NULL,
+  `link` VARCHAR(200),
   `fk_componente` INT NOT NULL,
   `fk_empresa` INT NOT NULL,
   PRIMARY KEY (`id_chamados`),
@@ -100,7 +101,6 @@ CREATE TABLE IF NOT EXISTS `anomalia`(
   primary key (`id_anomalia`),
   foreign key (`fk_chamados`) REFERENCES `chamados`(`id_chamados`) ON DELETE CASCADE
 );
-
 
 -- Cadastro de Empresas
 INSERT INTO `empresa` (`razao_social`, `cnpj`, `numero_imovel`, `cep`, `email`, `telefone`) 
