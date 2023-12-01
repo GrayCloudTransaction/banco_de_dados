@@ -1,4 +1,3 @@
-DROP DATABASE IF EXISTS ScriptGCT;
 CREATE DATABASE IF NOT EXISTS `ScriptGCT` DEFAULT CHARACTER SET utf8 ;
 USE `ScriptGCT`;
 
@@ -29,6 +28,20 @@ CREATE TABLE IF NOT EXISTS `funcionario` (
   FOREIGN KEY (`fk_empresa`) REFERENCES empresa(`id_empresa`) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS `rede`(
+`id_rede` INT PRIMARY KEY AUTO_INCREMENT NOT NULL,  
+`mac_address` VARCHAR(100), 
+`ip_publico` VARCHAR(100), 
+`uploadStat` DECIMAL(5,2), 
+`downloadStat` DECIMAL(5,2), 
+`dataSent` DECIMAL(5,2), 
+`dataRecv` DECIMAL(5,2)
+);
+
+CREATE TABLE IF NOT EXISTS `temperatura`(
+`id_temperatura` INT PRIMARY KEY AUTO_INCREMENT NOT NULL, 
+`valor_temperatura` DECIMAL(4,2)
+);
 
 CREATE TABLE IF NOT EXISTS `servidor` (
   `id_servidor` INT NOT NULL auto_increment,
@@ -40,10 +53,13 @@ CREATE TABLE IF NOT EXISTS `servidor` (
   `fk_empresa` INT NOT NULL,
   `prioridade` INT NULL,
   `localizacao` VARCHAR(200) NOT NULL,
+  `fk_rede` INT NOT NULL,
+  `fk_temperatura` INT NOT NULL,
   PRIMARY KEY (`id_servidor`),
-  FOREIGN KEY (`fk_empresa`) REFERENCES `empresa` (`id_empresa`) ON DELETE CASCADE
+  FOREIGN KEY (`fk_empresa`) REFERENCES `empresa` (`id_empresa`) ON DELETE CASCADE,
+  FOREIGN KEY (`fk_rede`) REFERENCES `rede` (`id_rede`) ON DELETE CASCADE,
+  FOREIGN KEY (`fk_temperatura`) REFERENCES `temperatura` (`id_temperatura`) ON DELETE CASCADE
 );
-
 
 CREATE TABLE IF NOT EXISTS `unidade_medida` (
   `id_unidade_medida` INT NOT NULL auto_increment,
@@ -126,10 +142,10 @@ values ('Cleiton Rodrigues', 'cleiton@gmail.com', '12345', 'Analísta Junior', "
 SELECT * FROM `funcionario`;
 
 -- Cadastro de Servidores 
-INSERT INTO `servidor` (`nome`, `codigo`, `tipo`,`status`, `descricao`, `fk_empresa`, `localizacao`)
-VALUES ('SERVER-AHRL1NB', 'XPTO-0987', 'Servidor Principal',1, 'Servidor responsável por executar X tarefa', 1, 'Sede empresa 012 - Port 3')
-	, ('SERVER-9HJD2AL', 'XP-9384', 'Servidor de Backup',1, 'Servidor responsável por backups', 1, 'Sede empresa 234 - Comp A')
-    , ('SERVER-UHD71P6', 'LOC-0284', 'Servidor de Homologação',1, 'Servidor responsável por Homologações ', 1, 'Sede empresa 102 - Port 1');
+INSERT INTO `servidor` (`nome`, `codigo`, `tipo`,`status`, `descricao`, `fk_empresa`, `localizacao`, `fk_rede`, `fk_temperatura`)
+VALUES ('SERVER-AHRL1NB', 'XPTO-0987', 'Servidor Principal',1, 'Servidor responsável por executar X tarefa', 1, 'Sede empresa 012 - Port 3', 1, 1)
+	, ('SERVER-9HJD2AL', 'XP-9384', 'Servidor de Backup',1, 'Servidor responsável por backups', 1, 'Sede empresa 234 - Comp A', 2, 2)
+    , ('SERVER-UHD71P6', 'LOC-0284', 'Servidor de Homologação',1, 'Servidor responsável por Homologações ', 1, 'Sede empresa 102 - Port 1', 3, 3);
 
 UPDATE servidor set `status` = 0 WHERE id_servidor in(2);
 
@@ -228,4 +244,13 @@ select * from registro
         AND fk_servidor = 1
         ORDER BY data_registro DESC
         LIMIT 3;
-
+        
+SELECT * FROM `servidor`, `rede`, `temperatura`
+		WHERE fk_rede = id_rede and fk_temperatura = id_temperatura;
+        
+	SELECT mac_address, dataSent, dataRecv
+        FROM rede, servidor
+        WHERE id_rede = fk_rede
+        AND id_servidor = 1
+        ORDER BY id_rede DESC
+        LIMIT 1;
